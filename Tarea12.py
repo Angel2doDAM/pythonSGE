@@ -27,21 +27,35 @@ class AdministradorDeTareas:
         print(f"Tarea '{nombreTarea}' añadida con éxito.")
 
     # Función para eliminar una tarea por nombre
-    def eliminarTarea(self, task_name):
-        self.tareas = [task for task in self.tareas if task["name"] != task_name]
+    def eliminarTarea(self, numeroTarea):
+
+        contador : int = 1
+        if not self.tareas:
+            print("No hay tareas para eliminar.")
+        else:
+            # Usamos una función lambda para ordenar las tareas por nombre
+            sorted_tasks = sorted(self.tareas, key=lambda x: x["name"])
+            for tarea in sorted_tasks:
+                if (contador==numeroTarea):
+                    tarea["name"] = "TareaParaEliminar"
+                    break
+                contador += 1
+
+        self.tareas = [tarea for tarea in self.tareas if tarea["name"] != "TareaParaEliminar"]
+
         self.guardarTarea()
-        print(f"Tarea '{task_name}' eliminada con éxito.")
+        print(f"Tarea eliminada con éxito.")
 
     # Función para marcar una tarea como completada
     def alternarTareas(self, nombreTarea):
-        for task in self.tareas:
-            if task["name"] == nombreTarea:
-                if task["completed"] == False:
-                    task["completed"] = True
+        for tarea in self.tareas:
+            if tarea["name"] == nombreTarea:
+                if tarea["completed"] == False:
+                    tarea["completed"] = True
                     self.guardarTarea()
                     print(f"Tarea '{nombreTarea}' marcada como completada.")
-                elif task["completed"] == True:
-                    task["completed"] = False
+                elif tarea["completed"] == True:
+                    tarea["completed"] = False
                     self.guardarTarea()
                     print(f"Tarea '{nombreTarea}' marcada como incompleta.")
             else:
@@ -49,14 +63,16 @@ class AdministradorDeTareas:
 
     # Función para mostrar las tareas
     def mostrarTarea(self):
+        contador : int = 1
         if not self.tareas:
             print("No hay tareas pendientes.")
         else:
             # Usamos una función lambda para ordenar las tareas por nombre
             sorted_tasks = sorted(self.tareas, key=lambda x: x["name"])
-            for task in sorted_tasks:
-                status = "Completada" if task["completed"] else "Pendiente"
-                print(f"Tarea: {task['name']} - Estado: {status}")
+            for tarea in sorted_tasks:
+                status = "Completada" if tarea["completed"] else "Pendiente"
+                print(f"Tarea{contador}: {tarea['name']} - Estado: {status}")
+                contador += 1
 
 # Función principal con manejo de excepciones
 def main():
@@ -91,8 +107,8 @@ def main():
             nombreTarea = input("Introduce el nombre de la tarea: ")
             administrador.aniadirTarea(nombreTarea)
         elif option == 2:
-            nombreTarea = input("Introduce el nombre de la tarea a eliminar: ")
-            administrador.eliminarTarea(nombreTarea)
+            numeroTarea = input("Introduce el número de la tarea a eliminar \nSe recomienda ver primero la lista de tareas \nTambién puedes cancelar con '0': ")
+            administrador.eliminarTarea(int(numeroTarea))
         elif option == 3:
             nombreTarea = input("Introduce el nombre de la tarea a completar: ")
             administrador.alternarTareas(nombreTarea)
